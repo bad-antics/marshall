@@ -1,0 +1,1435 @@
+// Copyright (c) 2026 bad-antics
+// Licensed under the MIT License. See LICENSE file in the project root.
+// https://github.com/bad-antics/marshall
+
+//! Marshall custom homepage and search results - branded interface powered by DuckDuckGo
+
+/// Generate the Marshall-branded homepage HTML
+pub fn generate_homepage() -> String {
+    let mut html = String::from(r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marshall - NullSec Search</title>
+    "#);
+    html.push_str(MARSHALL_STYLES);
+    html.push_str(r#"
+</head>
+<body>
+    <div class="grid-bg"></div>
+    
+    <div class="privacy-badge">
+        <span class="privacy-dot"></span>
+        Private Mode Active
+    </div>
+    
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">MARSHALL</div>
+            <div class="tagline">NullSec Search Engine</div>
+        </div>
+        
+        <div class="search-container">
+            <form class="search-box" action="https://duckduckgo.com/" method="GET" id="searchForm">
+                <div class="search-icon">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </div>
+                <input type="text" name="q" class="search-input" placeholder="Search the web privately..." autofocus autocomplete="off">
+                <button type="submit" class="search-btn">
+                    <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </button>
+            </form>
+        </div>
+        
+        <div class="quick-links">
+            <a href="https://github.com" class="quick-link">
+                <span class="quick-link-icon">🔧</span> GitHub
+            </a>
+            <a href="https://news.ycombinator.com" class="quick-link">
+                <span class="quick-link-icon">📰</span> Hacker News
+            </a>
+            <a href="https://reddit.com" class="quick-link">
+                <span class="quick-link-icon">💬</span> Reddit
+            </a>
+            <a href="https://wikipedia.org" class="quick-link">
+                <span class="quick-link-icon">📚</span> Wikipedia
+            </a>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">No Tracking</div>
+                <div class="feature-desc">Zero logs kept</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-title">Encrypted</div>
+                <div class="feature-desc">HTTPS only</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">👁️</div>
+                <div class="feature-title">OSINT Ready</div>
+                <div class="feature-desc">Deep analysis</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <a href="marshall://privacy">Privacy Policy</a>
+        <a href="https://github.com/bad-antics/marshall">About Marshall</a>
+    </div>
+    
+    <div class="powered-by">
+        Marshall NullSec Search v2.0
+    </div>
+    
+    <script>
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                document.querySelector('.search-input').focus();
+            }
+            if (e.key === 'Escape') {
+                document.querySelector('.search-input').blur();
+            }
+        });
+        
+        const form = document.getElementById('searchForm');
+        form.addEventListener('submit', (e) => {
+            const input = form.querySelector('.search-input');
+            if (!input.value.trim()) {
+                e.preventDefault();
+                input.focus();
+            }
+        });
+    </script>
+</body>
+</html>"#);
+    html
+}
+
+/// Generate Marshall-branded search results page
+/// This injects CSS to style DuckDuckGo results with Marshall branding
+pub fn generate_search_overlay_css() -> String {
+    SEARCH_RESULTS_INJECTION_CSS.to_string()
+}
+
+/// CSS injection for DuckDuckGo results to apply Marshall styling
+const SEARCH_RESULTS_INJECTION_CSS: &str = r#"
+/* Marshall Search Results Overlay - Injected into DuckDuckGo */
+:root {
+    --m-bg-primary: #0d0d0d !important;
+    --m-bg-secondary: #1a1a1a !important;
+    --m-bg-tertiary: #252525 !important;
+    --m-fg-primary: #e0e0e0 !important;
+    --m-fg-secondary: #808080 !important;
+    --m-accent-red: #ff0040 !important;
+    --m-accent-green: #00ff88 !important;
+    --m-border: #333333 !important;
+}
+
+body {
+    background: var(--m-bg-primary) !important;
+    color: var(--m-fg-primary) !important;
+}
+
+/* Hide DuckDuckGo branding */
+.header__logo-wrap,
+.logo-wrap--home,
+.header__badge,
+.badge-link {
+    opacity: 0 !important;
+}
+
+/* Style search results */
+.result,
+.result--more {
+    background: var(--m-bg-secondary) !important;
+    border: 1px solid var(--m-border) !important;
+    border-radius: 8px !important;
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.result__title,
+.result__a {
+    color: var(--m-accent-red) !important;
+}
+
+.result__url,
+.result__extras__url {
+    color: var(--m-accent-green) !important;
+}
+
+.result__snippet {
+    color: var(--m-fg-primary) !important;
+}
+"#;
+
+/// Core Marshall styles shared across pages
+const MARSHALL_STYLES: &str = r#"
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    :root {
+        --bg-primary: #0d0d0d;
+        --bg-secondary: #1a1a1a;
+        --bg-tertiary: #252525;
+        --fg-primary: #e0e0e0;
+        --fg-secondary: #808080;
+        --accent-red: #ff0040;
+        --accent-green: #00ff88;
+        --accent-yellow: #ffaa00;
+        --accent-blue: #00aaff;
+        --border-color: #333333;
+    }
+    
+    body {
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg-primary);
+        color: var(--fg-primary);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+    }
+    
+    .grid-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(255,0,64,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,0,64,0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: gridPulse 8s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    @keyframes gridPulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.6; }
+    }
+    
+    .container {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        max-width: 700px;
+        width: 100%;
+    }
+    
+    .logo-container {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .logo {
+        font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        font-size: 4rem;
+        font-weight: 700;
+        letter-spacing: -2px;
+        background: linear-gradient(135deg, var(--accent-red) 0%, #ff4466 50%, var(--accent-green) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: logoGlow 3s ease-in-out infinite;
+    }
+    
+    .logo-small {
+        font-size: 1.5rem;
+        letter-spacing: -1px;
+    }
+    
+    @keyframes logoGlow {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.2); }
+    }
+    
+    .tagline {
+        font-size: 0.9rem;
+        color: var(--fg-secondary);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-top: 0.5rem;
+        text-align: center;
+    }
+    
+    .search-container {
+        width: 100%;
+        position: relative;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-box:focus-within {
+        border-color: var(--accent-red);
+        box-shadow: 0 0 30px rgba(255,0,64,0.2), 0 0 60px rgba(255,0,64,0.1);
+    }
+    
+    .search-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+        opacity: 0.5;
+    }
+    
+    .search-icon svg {
+        fill: var(--fg-secondary);
+    }
+    
+    .search-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--fg-primary);
+        font-size: 1.1rem;
+        padding: 0.75rem 0;
+        font-family: inherit;
+    }
+    
+    .search-input::placeholder {
+        color: var(--fg-secondary);
+    }
+    
+    .search-btn {
+        background: linear-gradient(135deg, var(--accent-red), #ff4466);
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(255,0,64,0.5);
+    }
+    
+    .search-btn svg {
+        fill: white;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .quick-links {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 3rem;
+    }
+    
+    .quick-link {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        color: var(--fg-secondary);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .quick-link:hover {
+        border-color: var(--accent-red);
+        color: var(--fg-primary);
+        background: var(--bg-tertiary);
+    }
+    
+    .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 600px;
+    }
+    
+    .feature {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .feature:hover {
+        border-color: var(--accent-green);
+        transform: translateY(-2px);
+    }
+    
+    .feature-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--fg-primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .feature-desc {
+        font-size: 0.7rem;
+        color: var(--fg-secondary);
+    }
+    
+    .footer {
+        position: fixed;
+        bottom: 1rem;
+        font-size: 0.75rem;
+        color: var(--fg-secondary);
+        display: flex;
+        gap: 1.5rem;
+    }
+    
+    .footer a {
+        color: var(--fg-secondary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .footer a:hover {
+        color: var(--accent-red);
+    }
+    
+    .powered-by {
+        position: fixed;
+        bottom: 1rem;
+        right: 1.5rem;
+        font-size: 0.7rem;
+        color: var(--fg-secondary);
+        opacity: 0.6;
+    }
+    
+    .privacy-badge {
+        position: fixed;
+        top: 1rem;
+        right: 1.5rem;
+        background: rgba(0,255,136,0.1);
+        border: 1px solid rgba(0,255,136,0.3);
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        color: var(--accent-green);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 1000;
+    }
+    
+    .privacy-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--accent-green);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    /* OSINT Panel Styles */
+    .osint-panel {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .osint-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .osint-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--accent-red);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .risk-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .risk-low {
+        background: rgba(0,255,136,0.2);
+        color: var(--accent-green);
+        border: 1px solid rgba(0,255,136,0.3);
+    }
+    
+    .risk-medium {
+        background: rgba(255,170,0,0.2);
+        color: var(--accent-yellow);
+        border: 1px solid rgba(255,170,0,0.3);
+    }
+    
+    .risk-high {
+        background: rgba(255,0,64,0.2);
+        color: var(--accent-red);
+        border: 1px solid rgba(255,0,64,0.3);
+    }
+    
+    .risk-critical {
+        background: rgba(255,0,64,0.4);
+        color: #fff;
+        border: 1px solid var(--accent-red);
+        animation: criticalPulse 1s infinite;
+    }
+    
+    @keyframes criticalPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    .osint-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .osint-card {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    
+    .osint-card-title {
+        font-size: 0.7rem;
+        color: var(--fg-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .osint-card-value {
+        font-size: 0.9rem;
+        color: var(--fg-primary);
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .port-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .port-badge {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .port-badge.open {
+        border-color: var(--accent-green);
+        color: var(--accent-green);
+    }
+    
+    .port-badge.filtered {
+        border-color: var(--accent-yellow);
+        color: var(--accent-yellow);
+    }
+    
+    .vuln-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .vuln-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        background: var(--bg-primary);
+        border-radius: 4px;
+        border-left: 3px solid var(--accent-red);
+    }
+    
+    .vuln-item.critical { border-color: #ff0040; }
+    .vuln-item.high { border-color: #ff4444; }
+    .vuln-item.medium { border-color: #ffaa00; }
+    .vuln-item.low { border-color: #00ff88; }
+    
+    .vuln-cve {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--accent-red);
+    }
+    
+    .vuln-cvss {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: rgba(255,0,64,0.2);
+    }
+    
+    .expand-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        color: var(--fg-secondary);
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .expand-btn:hover {
+        border-color: var(--accent-red);
+        color: var(--fg-primary);
+    }
+    
+    .whois-info {
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+    
+    .whois-row {
+        display: flex;
+        gap: 1rem;
+        padding: 0.25rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .whois-label {
+        color: var(--fg-secondary);
+        min-width: 100px;
+    }
+    
+    .whois-value {
+        color: var(--fg-primary);
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* Collapsible sections */
+    .collapsible {
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .collapsible-content.expanded {
+        max-height: 500px;
+    }
+    
+    .chevron {
+        transition: transform 0.3s;
+    }
+    
+    .chevron.expanded {
+        transform: rotate(90deg);
+    }
+</style>
+"#;
+
+/// Generate a Marshall-branded OSINT results page for a domain
+pub fn generate_osint_page(domain: &str, whois: Option<&str>, ports: &[(u16, &str)], vulns: &[(& str, &str, f32)]) -> String {
+    let ports_html: String = ports.iter()
+        .map(|(port, service)| format!(
+            r#"<span class="port-badge open">{}/{}</span>"#,
+            port, service
+        ))
+        .collect::<Vec<_>>()
+        .join("");
+    
+    let vulns_html: String = vulns.iter()
+        .map(|(cve, severity, cvss)| {
+            let severity_class = match *severity {
+                "critical" => "critical",
+                "high" => "high",
+                "medium" => "medium",
+                _ => "low"
+            };
+            format!(
+                r#"<div class="vuln-item {}">
+                    <span class="vuln-cve">{}</span>
+                    <span class="vuln-cvss">{:.1}</span>
+                </div>"#,
+                severity_class, cve, cvss
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("");
+    
+    let risk_score = calculate_risk(ports.len(), vulns);
+    let (risk_class, risk_text) = match risk_score {
+        0..=25 => ("risk-low", "Low Risk"),
+        26..=50 => ("risk-medium", "Medium Risk"),
+        51..=75 => ("risk-high", "High Risk"),
+        _ => ("risk-critical", "Critical Risk")
+    };
+    
+    let whois_html = whois.map(|w| format!(
+        r#"<div class="osint-card" style="grid-column: span 2;">
+            <div class="osint-card-title">📋 WHOIS Information</div>
+            <div class="whois-info">{}</div>
+        </div>"#, w
+    )).unwrap_or_default();
+
+    format!(r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marshall OSINT - {domain}</title>
+    {MARSHALL_STYLES}
+</head>
+<body>
+    <div class="grid-bg"></div>
+    
+    <div class="privacy-badge">
+        <span class="privacy-dot"></span>
+        OSINT Mode
+    </div>
+    
+    <div style="width: 100%; max-width: 900px; padding: 2rem; position: relative; z-index: 1;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <div class="logo logo-small">MARSHALL</div>
+            <span style="color: var(--fg-secondary);">›</span>
+            <span style="color: var(--fg-primary);">OSINT Report</span>
+        </div>
+        
+        <div class="osint-panel">
+            <div class="osint-header">
+                <div class="osint-title">
+                    <span>🎯</span>
+                    <span>{domain}</span>
+                </div>
+                <span class="risk-badge {risk_class}">{risk_text} ({risk_score})</span>
+            </div>
+            
+            <div class="osint-grid">
+                <div class="osint-card">
+                    <div class="osint-card-title">🔌 Open Ports ({port_count})</div>
+                    <div class="port-list">
+                        {ports_html}
+                    </div>
+                </div>
+                
+                <div class="osint-card">
+                    <div class="osint-card-title">⚠️ Vulnerabilities ({vuln_count})</div>
+                    <div class="vuln-list">
+                        {vulns_html}
+                    </div>
+                </div>
+                
+                {whois_html}
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="expand-btn" onclick="window.history.back()">
+                ← Back to Search
+            </button>
+            <button class="expand-btn" onclick="navigator.clipboard.writeText(window.location.href)">
+                📋 Copy Report URL
+            </button>
+        </div>
+    </div>
+    
+    <div class="powered-by">
+        Marshall OSINT Engine v2.0
+    </div>
+</body>
+</html>"#, 
+        domain = domain,
+        MARSHALL_STYLES = MARSHALL_STYLES,
+        risk_class = risk_class,
+        risk_text = risk_text,
+        risk_score = risk_score,
+        port_count = ports.len(),
+        ports_html = ports_html,
+        vuln_count = vulns.len(),
+        vulns_html = vulns_html,
+        whois_html = whois_html
+    )
+}
+
+fn calculate_risk(port_count: usize, vulns: &[(&str, &str, f32)]) -> u8 {
+    let mut score: u8 = 0;
+    score = score.saturating_add((port_count * 5).min(30) as u8);
+    for (_, severity, cvss) in vulns {
+        match *severity {
+            "critical" => score = score.saturating_add(25),
+            "high" => score = score.saturating_add(15),
+            "medium" => score = score.saturating_add(8),
+            _ => score = score.saturating_add(3),
+        }
+        score = score.saturating_add((*cvss as u8).saturating_div(2));
+    }
+    score.min(100)
+}
+
+/// Generate the Marshall user script that can be injected into DuckDuckGo results
+pub fn generate_userscript() -> String {
+    r##"
+// Marshall Browser - Aggressive DDG Rebrand Script v2.1
+(function() {
+    'use strict';
+    
+    // Prevent multiple injections
+    if (window.__marshallInjected) return;
+    window.__marshallInjected = true;
+    
+    console.log('[Marshall] Injecting branding script...');
+    
+    // IMMEDIATELY inject CSS to hide everything DDG-related
+    const css = document.createElement('style');
+    css.id = 'marshall-theme';
+    css.textContent = `
+        /* Hide DDG branding elements only */
+        .logo-wrap, .logo_homepage, .header__logo-wrap, .logo-wrap--home,
+        .header__badge, .badge-link, .logo_dax, .ddg-logo, #logo_homepage_link,
+        .logo-link, .logo__icon, .header-wrap--home .logo-wrap, .logo-dax svg,
+        .footer, .footer__nav, .footer__links, .ddg-extension-hide,
+        .zcm__link--privacy, .feedback-btn, .badge-link__thumb,
+        a[href*="duckduckgo.com/about"], a[href*="duckduckgo.com/privacy"],
+        a[href*="duckduckgo.com/feedback"], a[href*="duckduckgo.com/spread"],
+        .header__icons, .js-acp-main-menu, .acp-main-menu,
+        .serp__bottom, .related-searches, .zci--about,
+        .header__logo, .search-filters__logo {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        /* Force dark theme */
+        html, body, .body--serp, .serp, .content--home, .content {
+            background: #0d0d0d !important;
+            color: #e0e0e0 !important;
+        }
+        
+        /* Header styling */
+        .header, .header--main, .header-wrap, .header__form {
+            background: #1a1a1a !important;
+            border-bottom: 1px solid #333 !important;
+        }
+        
+        /* Search input */
+        .search__input, .searchbox_input__input, input[name="q"],
+        .js-search-input, #search_form_input {
+            background: #252525 !important;
+            color: #e0e0e0 !important;
+            border: 2px solid #333 !important;
+            border-radius: 8px !important;
+        }
+        
+        .search__input:focus, input[name="q"]:focus {
+            border-color: #ff0040 !important;
+            outline: none !important;
+        }
+        
+        /* Search button */
+        .search__button, .searchbox_searchButton__button, #search_button {
+            background: #ff0040 !important;
+            border: none !important;
+        }
+        
+        /* Results */
+        .result, .result--more, .nrn-react-div, article[data-testid="result"] {
+            background: #1a1a1a !important;
+            border: 1px solid #333 !important;
+            border-radius: 8px !important;
+            margin-bottom: 1rem !important;
+            padding: 1rem !important;
+        }
+        
+        .result__title, .result__a, .result-title-a, h2 a {
+            color: #ff0040 !important;
+        }
+        
+        .result__url, .result__extras__url, .result__url__domain {
+            color: #00ff88 !important;
+        }
+        
+        .result__snippet, .result-snippet {
+            color: #e0e0e0 !important;
+        }
+        
+        /* Add Marshall branding header - FIXED positioning */
+        #marshall-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 48px !important;
+            min-height: 48px !important;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%) !important;
+            border-bottom: 2px solid #ff0040 !important;
+            display: flex !important;
+            align-items: center !important;
+            padding: 0 20px !important;
+            z-index: 2147483647 !important;
+            font-family: 'Segoe UI', -apple-system, sans-serif !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5) !important;
+        }
+        
+        #marshall-header * {
+            display: inline-flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: static !important;
+            width: auto !important;
+            height: auto !important;
+        }
+        
+        #marshall-header .marshall-logo-svg {
+            width: 32px !important;
+            height: 32px !important;
+            margin-right: 12px !important;
+            flex-shrink: 0 !important;
+        }
+        
+        #marshall-header .marshall-brand {
+            font-size: 20px !important;
+            font-weight: bold !important;
+            color: #ff0040 !important;
+            letter-spacing: 3px !important;
+        }
+        
+        #marshall-header .marshall-tagline {
+            font-size: 12px !important;
+            color: #808080 !important;
+            margin-left: 16px !important;
+        }
+        
+        #marshall-header .marshall-indicator {
+            margin-left: auto !important;
+            background: rgba(0,255,136,0.15) !important;
+            color: #00ff88 !important;
+            padding: 6px 14px !important;
+            border-radius: 14px !important;
+            font-size: 12px !important;
+        }
+        
+        #marshall-header .pulse-dot {
+            display: inline-block !important;
+            width: 8px !important;
+            height: 8px !important;
+            background: #00ff88 !important;
+            border-radius: 50% !important;
+            margin-right: 8px !important;
+            animation: marshallPulse 2s infinite !important;
+        }
+        
+        @keyframes marshallPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Push ALL content down for header */
+        html {
+            padding-top: 52px !important;
+        }
+        
+        body {
+            padding-top: 52px !important;
+            margin-top: 0 !important;
+        }
+        
+        .header, .header-wrap, .header--main {
+            margin-top: 48px !important;
+        }
+        
+        /* Sidebar styles */
+        .sidebar, .results--sidebar {
+            background: #1a1a1a !important;
+        }
+    `;
+    
+    // Inject CSS ASAP
+    if (document.head) {
+        document.head.appendChild(css);
+    } else if (document.documentElement) {
+        document.documentElement.appendChild(css);
+    }
+    
+    // Create Marshall header with logo
+    function createMarshallHeader() {
+        // Remove any existing header first
+        const existing = document.getElementById('marshall-header');
+        if (existing) {
+            console.log('[Marshall] Header already exists');
+            return;
+        }
+        
+        console.log('[Marshall] Creating header...');
+        
+        const header = document.createElement('div');
+        header.id = 'marshall-header';
+        
+        // SVG Logo
+        const logoSvg = '<svg class="marshall-logo-svg" viewBox="0 0 40 40" width="32" height="32">' +
+            '<circle cx="20" cy="20" r="18" fill="none" stroke="#ff0040" stroke-width="2"/>' +
+            '<path d="M12 28V14l8 7 8-7v14" fill="none" stroke="#ff0040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>';
+        
+        header.innerHTML = logoSvg +
+            '<span class="marshall-brand">MARSHALL</span>' +
+            '<span class="marshall-tagline">NullSec Search Engine</span>' +
+            '<span class="marshall-indicator"><span class="pulse-dot"></span>Private Mode</span>';
+        
+        // Insert at very beginning of body
+        if (document.body) {
+            document.body.insertBefore(header, document.body.firstChild);
+            console.log('[Marshall] Header inserted into body');
+        } else {
+            // If body doesn't exist yet, wait
+            const waitForBody = setInterval(() => {
+                if (document.body) {
+                    clearInterval(waitForBody);
+                    document.body.insertBefore(header, document.body.firstChild);
+                    console.log('[Marshall] Header inserted (delayed)');
+                }
+            }, 10);
+        }
+    }
+    
+    // Replace page title
+    function replaceTitle() {
+        const query = new URLSearchParams(window.location.search).get('q') || '';
+        document.title = query ? 'Marshall - ' + query : 'Marshall Search';
+    }
+    
+    // Remove DDG elements aggressively
+    function removeElements() {
+        const selectors = [
+            '.logo-wrap', '.logo_homepage', '#logo_homepage_link', '.logo-link',
+            '.footer', '.badge-link', '.header__badge', '.ddg-logo',
+            'svg.logo:not(.marshall-logo-svg)', 'img[src*="duckduckgo"]',
+            'a[href*="duckduckgo.com/about"]', 'a[href*="/privacy"]',
+            '.feedback-btn', '.serp__bottom', '.header__logo',
+            '.chat-header__logo', '[class*="DuckAI"]', '[class*="duck-ai"]'
+        ];
+        
+        selectors.forEach(sel => {
+            try {
+                document.querySelectorAll(sel).forEach(el => {
+                    if (!el.closest('#marshall-header') && el.id !== 'marshall-header') {
+                        el.style.cssText = 'display:none!important;visibility:hidden!important;height:0!important;width:0!important;position:absolute!important;left:-9999px!important;';
+                    }
+                });
+            } catch(e) {}
+        });
+        
+        // Also hide elements containing "duckduckgo" text
+        document.querySelectorAll('*').forEach(el => {
+            if (el.textContent && el.textContent.toLowerCase().includes('duckduckgo') && 
+                !el.closest('#marshall-header') && el.children.length === 0) {
+                el.style.cssText = 'display:none!important;';
+            }
+        });
+    }
+    
+    // Rebrand Duck AI to Dr Marshall - CONTINUOUS replacement for React sites
+    function rebrandAI() {
+        // Text replacements for Duck branding
+        const replaceDuckText = () => {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while (node = walker.nextNode()) {
+                if (node.parentElement && 
+                    !node.parentElement.closest('#marshall-header') && 
+                    !node.parentElement.closest('#dr-marshall-osint-panel') &&
+                    !node.parentElement.closest('script') &&
+                    !node.parentElement.closest('style')) {
+                    let text = node.nodeValue;
+                    let newText = text
+                        .replace(/Duck\.ai/g, 'Dr Marshall')
+                        .replace(/duck\.ai/g, 'Dr Marshall')
+                        .replace(/DuckAI/g, 'Dr Marshall')
+                        .replace(/Duck AI/g, 'Dr Marshall')
+                        .replace(/DuckDuckGo/gi, 'Marshall')
+                        .replace(/AI Chat/g, 'Dr Marshall')
+                        .replace(/Ask AI/g, 'Ask Dr Marshall')
+                        .replace(/Chat with AI/g, 'Chat with Dr Marshall');
+                    if (text !== newText) {
+                        node.nodeValue = newText;
+                    }
+                }
+            }
+            
+            // Also update title
+            if (document.title.match(/duck/i)) {
+                document.title = document.title.replace(/duck\.?ai/gi, 'Dr Marshall').replace(/duckduckgo/gi, 'Marshall');
+            }
+        };
+        
+        // Run immediately
+        replaceDuckText();
+        
+        // Run continuously for React/dynamic content
+        setInterval(replaceDuckText, 500);
+        
+        // Inject Dr Marshall OSINT Tools Panel
+        injectOSINTPanel();
+    }
+    
+    // Dr Marshall OSINT Tools Panel
+    function injectOSINTPanel() {
+        if (document.getElementById('dr-marshall-osint-panel')) return;
+        
+        const osintCSS = document.createElement('style');
+        osintCSS.textContent = `
+            #dr-marshall-osint-panel {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 320px;
+                background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+                border: 1px solid #333;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+                z-index: 2147483646;
+                font-family: 'Segoe UI', -apple-system, sans-serif;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            #dr-marshall-osint-panel.collapsed {
+                width: auto;
+                height: auto;
+            }
+            #dr-marshall-osint-panel.collapsed .osint-body {
+                display: none;
+            }
+            .osint-panel-header {
+                background: linear-gradient(90deg, #ff0040, #cc0033);
+                padding: 12px 16px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+            }
+            .osint-panel-header:hover {
+                background: linear-gradient(90deg, #ff1a56, #dd1144);
+            }
+            .osint-panel-avatar {
+                width: 36px;
+                height: 36px;
+                background: #0d0d0d;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                color: #ff0040;
+                margin-right: 12px;
+                font-size: 14px;
+            }
+            .osint-panel-title {
+                color: white;
+                font-weight: 600;
+                font-size: 14px;
+            }
+            .osint-panel-subtitle {
+                color: rgba(255,255,255,0.7);
+                font-size: 11px;
+            }
+            .osint-panel-toggle {
+                margin-left: auto;
+                color: white;
+                font-size: 18px;
+            }
+            .osint-body {
+                padding: 16px;
+            }
+            .osint-input-group {
+                margin-bottom: 12px;
+            }
+            .osint-input {
+                width: 100%;
+                padding: 10px 12px;
+                background: #252525;
+                border: 1px solid #444;
+                border-radius: 8px;
+                color: #e0e0e0;
+                font-size: 13px;
+                outline: none;
+                box-sizing: border-box;
+            }
+            .osint-input:focus {
+                border-color: #ff0040;
+            }
+            .osint-input::placeholder {
+                color: #666;
+            }
+            .osint-tools-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .osint-tool-btn {
+                background: #252525;
+                border: 1px solid #333;
+                border-radius: 8px;
+                padding: 12px 8px;
+                color: #e0e0e0;
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-align: center;
+            }
+            .osint-tool-btn:hover {
+                background: #333;
+                border-color: #ff0040;
+                color: #ff0040;
+            }
+            .osint-tool-btn .icon {
+                font-size: 20px;
+                display: block;
+                margin-bottom: 4px;
+            }
+            .osint-quick-actions {
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid #333;
+            }
+            .osint-quick-btn {
+                width: 100%;
+                background: linear-gradient(90deg, #ff0040, #cc0033);
+                border: none;
+                border-radius: 8px;
+                padding: 10px;
+                color: white;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                margin-bottom: 8px;
+                transition: all 0.2s ease;
+            }
+            .osint-quick-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(255,0,64,0.3);
+            }
+            .osint-quick-btn.secondary {
+                background: #252525;
+                border: 1px solid #ff0040;
+                color: #ff0040;
+            }
+            .osint-status {
+                font-size: 10px;
+                color: #666;
+                text-align: center;
+                margin-top: 8px;
+            }
+            .osint-status .active {
+                color: #00ff88;
+            }
+        `;
+        document.head.appendChild(osintCSS);
+        
+        const panel = document.createElement('div');
+        panel.id = 'dr-marshall-osint-panel';
+        panel.innerHTML = `
+            <div class="osint-panel-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                <div class="osint-panel-avatar">Dr</div>
+                <div>
+                    <div class="osint-panel-title">Dr Marshall</div>
+                    <div class="osint-panel-subtitle">OSINT Intelligence Suite</div>
+                </div>
+                <span class="osint-panel-toggle">⌄</span>
+            </div>
+            <div class="osint-body">
+                <div class="osint-input-group">
+                    <input type="text" class="osint-input" id="osint-target" placeholder="Enter target (domain, IP, email...)">
+                </div>
+                <div class="osint-tools-grid">
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('whois')">
+                        <span class="icon">🔍</span>
+                        WHOIS
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('portscan')">
+                        <span class="icon">🔌</span>
+                        Port Scan
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('dns')">
+                        <span class="icon">🌐</span>
+                        DNS Lookup
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('headers')">
+                        <span class="icon">📋</span>
+                        HTTP Headers
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('ssl')">
+                        <span class="icon">🔐</span>
+                        SSL/TLS Info
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('vuln')">
+                        <span class="icon">⚠️</span>
+                        Vuln Scan
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('email')">
+                        <span class="icon">📧</span>
+                        Email OSINT
+                    </button>
+                    <button class="osint-tool-btn" onclick="drMarshallOSINT('social')">
+                        <span class="icon">👤</span>
+                        Social Recon
+                    </button>
+                </div>
+                <div class="osint-quick-actions">
+                    <button class="osint-quick-btn" onclick="drMarshallOSINT('full')">
+                        🚀 Full OSINT Report
+                    </button>
+                    <button class="osint-quick-btn secondary" onclick="drMarshallOSINT('reverse')">
+                        🔄 Reverse Lookup
+                    </button>
+                </div>
+                <div class="osint-status">
+                    <span class="active">●</span> Dr Marshall Online | Secure Connection
+                </div>
+            </div>
+        `;
+        document.body.appendChild(panel);
+        
+        // OSINT tool handler
+        window.drMarshallOSINT = function(tool) {
+            const target = document.getElementById('osint-target').value.trim();
+            if (!target) {
+                alert('Please enter a target domain, IP, or identifier');
+                return;
+            }
+            
+            const toolUrls = {
+                'whois': 'marshall://osint/' + encodeURIComponent(target),
+                'portscan': 'marshall://osint/' + encodeURIComponent(target) + '?scan=ports',
+                'dns': 'https://dnsdumpster.com/?search=' + encodeURIComponent(target),
+                'headers': 'https://securityheaders.com/?q=' + encodeURIComponent(target),
+                'ssl': 'https://www.ssllabs.com/ssltest/analyze.html?d=' + encodeURIComponent(target),
+                'vuln': 'marshall://osint/' + encodeURIComponent(target) + '?scan=vuln',
+                'email': 'https://epieos.com/?q=' + encodeURIComponent(target),
+                'social': 'https://instantusername.com/#/' + encodeURIComponent(target.split('@')[0]),
+                'full': 'marshall://osint/' + encodeURIComponent(target) + '?scan=full',
+                'reverse': 'https://viewdns.info/reverseip/?host=' + encodeURIComponent(target)
+            };
+            
+            const url = toolUrls[tool];
+            if (url) {
+                if (url.startsWith('marshall://')) {
+                    window.location.href = url;
+                } else {
+                    window.open(url, '_blank');
+                }
+            }
+        };
+        
+        // Allow Enter key to trigger full scan
+        document.getElementById('osint-target').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                drMarshallOSINT('full');
+            }
+        });
+    }
+    
+    // Run immediately
+    createMarshallHeader();
+    replaceTitle();
+    removeElements();
+    rebrandAI();
+    
+    // Run again when DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            createMarshallHeader();
+            replaceTitle();
+            removeElements();
+            rebrandAI();
+        });
+    }
+    
+    // Run on load too
+    window.addEventListener('load', () => {
+        createMarshallHeader();
+        replaceTitle();
+        removeElements();
+        rebrandAI();
+    });
+    
+    // Watch for changes - but throttled
+    let mutationTimeout = null;
+    const observer = new MutationObserver(() => {
+        if (mutationTimeout) return;
+        mutationTimeout = setTimeout(() => {
+            mutationTimeout = null;
+            createMarshallHeader();
+            replaceTitle();
+            removeElements();
+            rebrandAI();
+        }, 50);
+    });
+    
+    // Start observing
+    const startObserver = () => {
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    };
+    
+    if (document.body) {
+        startObserver();
+    } else {
+        document.addEventListener('DOMContentLoaded', startObserver);
+    }
+    
+    console.log('[Marshall] Branding script initialized');
+})();
+"##.to_string()
+}

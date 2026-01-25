@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=2.0.0
+Type=Application
+Name=Marshall
+GenericName=Command Center
+Comment=NullSec Command Center - Browser • OSINT • Workforce • VoIP
+Exec=marshall
+Icon=marshall
+Terminal=false
+Categories=Network;WebBrowser;Security;
+Keywords=browser;privacy;osint;security;voip;workforce;
+StartupWMClass=marshall
+StartupNotify=true

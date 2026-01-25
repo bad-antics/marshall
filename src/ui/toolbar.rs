@@ -6,6 +6,8 @@
 
 use gtk::prelude::*;
 use gtk::{Box as GtkBox, Button, Orientation};
+use std::cell::RefCell;
+use std::rc::Rc;
 
 use crate::config::Config;
 use super::UrlBar;
@@ -36,10 +38,12 @@ impl Toolbar {
         let back_btn = Button::from_icon_name(Some("go-previous-symbolic"), gtk::IconSize::Button);
         back_btn.set_tooltip_text(Some("Back (Alt+Left)"));
         back_btn.style_context().add_class("toolbar-btn");
+        back_btn.set_sensitive(false);
 
         let forward_btn = Button::from_icon_name(Some("go-next-symbolic"), gtk::IconSize::Button);
         forward_btn.set_tooltip_text(Some("Forward (Alt+Right)"));
         forward_btn.style_context().add_class("toolbar-btn");
+        forward_btn.set_sensitive(false);
 
         let reload_btn = Button::from_icon_name(Some("view-refresh-symbolic"), gtk::IconSize::Button);
         reload_btn.set_tooltip_text(Some("Reload (Ctrl+R)"));
@@ -115,5 +119,34 @@ impl Toolbar {
             ctx.add_class("shield-inactive");
             self.shield_btn.set_tooltip_text(Some("Privacy Protection: OFF"));
         }
+    }
+
+    // Connect signal handlers
+    pub fn connect_back<F: Fn() + 'static>(&self, f: F) {
+        self.back_btn.connect_clicked(move |_| f());
+    }
+
+    pub fn connect_forward<F: Fn() + 'static>(&self, f: F) {
+        self.forward_btn.connect_clicked(move |_| f());
+    }
+
+    pub fn connect_reload<F: Fn() + 'static>(&self, f: F) {
+        self.reload_btn.connect_clicked(move |_| f());
+    }
+
+    pub fn connect_home<F: Fn() + 'static>(&self, f: F) {
+        self.home_btn.connect_clicked(move |_| f());
+    }
+
+    pub fn connect_navigate<F: Fn(&str) + 'static>(&self, f: F) {
+        self.url_bar.connect_activate(f);
+    }
+
+    pub fn connect_menu<F: Fn() + 'static>(&self, f: F) {
+        self.menu_btn.connect_clicked(move |_| f());
+    }
+
+    pub fn connect_shield<F: Fn() + 'static>(&self, f: F) {
+        self.shield_btn.connect_clicked(move |_| f());
     }
 }

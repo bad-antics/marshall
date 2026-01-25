@@ -1,33 +1,46 @@
 [package]
 name = "marshall"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
 authors = ["bad-antics"]
-description = "Marshall - NullSec Privacy Browser | Secure. Private. Untraceable."
+description = "Marshall - NullSec Command Center | Browser • OSINT • Workforce • VoIP"
 license = "MIT"
 repository = "https://github.com/bad-antics/marshall"
-keywords = ["browser", "privacy", "security", "webkit", "nullsec"]
-categories = ["web-programming", "gui"]
+keywords = ["browser", "privacy", "security", "osint", "nullsec", "voip", "workforce"]
+categories = ["web-programming", "gui", "command-line-utilities"]
 
 [features]
 default = []
 tor = []
 developer = []
+voip = []
+assistant = []
 
 [dependencies]
-# WebKit GTK bindings - this pulls in gtk, gdk, glib, gio
+# WebKit GTK bindings
 webkit2gtk = "0.19"
 gtk = "0.16"
 gdk = "0.16"
 gio = "0.16"
 glib = "0.16"
+glib-sys = "0.16"
+cairo-rs = "0.16"
+pango = "0.16"
 
 # Async runtime
-tokio = { version = "1.35", features = ["full", "rt-multi-thread", "macros"] }
+tokio = { version = "1.35", features = ["full", "rt-multi-thread", "macros", "sync", "time", "net", "io-util", "process"] }
+tokio-stream = "0.1"
+async-trait = "0.1"
+futures = "0.3"
 
 # Networking & Security
-reqwest = { version = "0.11", features = ["cookies", "rustls-tls"], default-features = false }
+reqwest = { version = "0.11", features = ["cookies", "rustls-tls", "json", "stream"], default-features = false }
 url = "2.5"
+trust-dns-resolver = "0.23"
+socket2 = "0.5"
+
+# Database (SQLite for local storage)
+rusqlite = { version = "0.30", features = ["bundled", "chrono", "serde_json"] }
 
 # Data & Config
 serde = { version = "1.0", features = ["derive"] }
@@ -37,7 +50,16 @@ directories = "5.0"
 
 # Crypto & Security
 sha2 = "0.10"
+sha1 = "0.10"
+md-5 = "0.10"
 base64 = "0.21"
+hmac = "0.12"
+aes-gcm = "0.10"
+
+# Audio/Voice (TTS/STT/VoIP)
+rodio = "0.17"
+cpal = "0.15"
+hound = "3.5"
 
 # Logging
 tracing = "0.1"
@@ -45,12 +67,25 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Utils
 chrono = { version = "0.4", features = ["serde"] }
-uuid = { version = "1.6", features = ["v4"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
 regex = "1.10"
 once_cell = "1.19"
 parking_lot = "0.12"
 rand = "0.8"
 num_cpus = "1.16"
+thiserror = "1.0"
+anyhow = "1.0"
+lazy_static = "1.4"
+crossbeam-channel = "0.5"
+dashmap = "5.5"
+ipnetwork = "0.20"
+
+# HTML/XML parsing for OSINT
+scraper = "0.18"
+select = "0.6"
+quick-xml = "0.31"
+urlencoding = "2.1.3"
+dirs = "6.0.0"
 
 [profile.release]
 opt-level = 3

@@ -106,7 +106,7 @@ impl Default for Config {
     fn default() -> Self {
         Config {
             general: GeneralConfig {
-                homepage: "about:blank".to_string(),
+                homepage: "marshall://home".to_string(),
                 search_engine: "https://duckduckgo.com/?q=".to_string(),
                 download_dir: dirs::download_dir()
                     .unwrap_or_else(|| PathBuf::from("~/Downloads"))
