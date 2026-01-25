@@ -1,0 +1,52 @@
+name: Issue Responder Bot
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  respond:
+    if: github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Respond to Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const author = issue.user.login;
+            
+            let response = '';
+            let labels = [];
+            
+            if (title.includes('bug') || title.includes('error') || title.includes('crash')) {
+              labels = ['bug', 'triage'];
+              response = `## 🐛 Bug Report Received\n\nThanks @${author} for reporting this!\n\n### Checklist:\n- [ ] Steps to reproduce\n- [ ] Expected vs actual behavior\n- [ ] Marshall version\n- [ ] OS/Environment\n\n---\n*🤖 Marshall Bot*`;
+            } else if (title.includes('feature') || title.includes('request') || title.includes('add')) {
+              labels = ['enhancement'];
+              response = `## 💡 Feature Request Received\n\nThanks @${author} for the suggestion!\n\n### To help evaluate:\n- Why do you need this?\n- How would it work?\n\n---\n*🤖 Marshall Bot*`;
+            } else {
+              labels = ['question'];
+              response = `## 📝 Issue Received\n\nThanks @${author}! We'll review this soon.\n\n---\n*🤖 Marshall Bot*`;
+            }
+            
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: labels
+            });
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: response
+            });
