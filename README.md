@@ -64,6 +64,19 @@
 - **🔐 DNS over HTTPS** — Encrypted DNS queries
 - **🔧 Developer Tools** — Web inspector for developers
 
+
+### 🔌 Extensions
+Marshall supports installable extensions for enhanced functionality:
+
+- **🔍 Shodan Lookup** — Query Shodan.io for IP/domain intelligence
+- **📋 WHOIS Inspector** — Detailed domain registration info
+- **⚡ XSS Scanner** — Detect Cross-Site Scripting vulnerabilities
+- **📝 Header Analyzer** — Security header analysis
+- **🔐 Cert Inspector** — SSL/TLS certificate grading
+- **📡 Traffic Analyzer** — Network monitoring and anomaly detection
+- **🔧 Request Tamper** — HTTP interception and modification
+
+👉 **[Browse all extensions](https://github.com/bad-antics/marshall-extensions)**
 ---
 
 ## 📦 Installation
@@ -280,6 +293,8 @@ MIT License - see [LICENSE](LICENSE) file.
 ---
 
 ## 🔗 Links
+
+- **Extensions:** [marshall-extensions](https://github.com/bad-antics/marshall-extensions)
 
 - **Website:** [bad-antics.github.io](https://bad-antics.github.io)
 - **Discord:** [discord.gg/killers](https://discord.gg/killers)
