@@ -6,7 +6,7 @@ authors = ["bad-antics"]
 description = "Marshall - NullSec Command Center | Browser • OSINT • Workforce • VoIP • AI"
 license = "MIT"
 repository = "https://github.com/bad-antics/marshall"
-keywords = ["browser", "privacy", "security", "osint", "nullsec", "voip", "workforce", "ai"]
+keywords = ["browser", "privacy", "security", "osint", "gtk4"]
 categories = ["web-programming", "gui", "command-line-utilities"]
 
 [features]
