@@ -72,7 +72,7 @@ impl AIChatPanel {
 
         // Input area
         let input_box = Box::new(Orientation::Horizontal, 8);
-        input_box.set_margin_all(12);
+        input_box.set_margin_start(12); input_box.set_margin_end(12); input_box.set_margin_top(12); input_box.set_margin_bottom(12);
 
         let input_entry = Entry::new();
         input_entry.set_hexpand(true);
@@ -117,7 +117,7 @@ impl AIChatPanel {
     fn create_header() -> Box {
         let header = Box::new(Orientation::Horizontal, 12);
         header.set_css_classes(&["ai-header"]);
-        header.set_margin_all(12);
+        header.set_margin_start(12); header.set_margin_end(12); header.set_margin_top(12); header.set_margin_bottom(12);
 
         // Avatar
         let avatar = Label::new(Some("🤖"));
