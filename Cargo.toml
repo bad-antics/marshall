@@ -1,23 +1,24 @@
 [package]
 name = "marshall"
-version = "2.0.0"
+version = "2.1.0"
 edition = "2021"
 authors = ["bad-antics"]
-description = "Marshall - NullSec Command Center | Browser • OSINT • Workforce • VoIP"
+description = "Marshall - NullSec Command Center | Browser • OSINT • Workforce • VoIP • AI"
 license = "MIT"
 repository = "https://github.com/bad-antics/marshall"
-keywords = ["browser", "privacy", "security", "osint", "nullsec", "voip", "workforce"]
+keywords = ["browser", "privacy", "security", "osint", "nullsec", "voip", "workforce", "ai"]
 categories = ["web-programming", "gui", "command-line-utilities"]
 
 [features]
-default = []
+default = ["assistant"]
 tor = []
 developer = []
 voip = []
 assistant = []
 
 [dependencies]
-# WebKit GTK bindings
+# GTK4/WebKit GTK bindings
+gtk4 = "0.7"
 webkit2gtk = "0.19"
 gtk = "0.16"
 gdk = "0.16"
@@ -93,3 +94,7 @@ lto = true
 codegen-units = 1
 panic = "abort"
 strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
