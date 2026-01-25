@@ -7,8 +7,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg?style=for-the-badge)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![WebKit](https://img.shields.io/badge/WebKit-0088CC?style=for-the-badge&logo=safari&logoColor=white)](https://webkit.org/)
-[![GTK4](https://img.shields.io/badge/GTK4-4A86CF?style=for-the-badge&logo=gtk&logoColor=white)](https://gtk.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg?style=for-the-badge)](https://github.com/bad-antics/marshall)
+[![GTK3](https://img.shields.io/badge/GTK3-4A86CF?style=for-the-badge&logo=gtk&logoColor=white)](https://gtk.org/)
+[![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg?style=for-the-badge)](https://github.com/bad-antics/marshall/releases/tag/v1.0.0)
+[![Release](https://img.shields.io/github/v/release/bad-antics/marshall?style=for-the-badge&color=green)](https://github.com/bad-antics/marshall/releases)
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -71,9 +72,8 @@
 
 ```bash
 sudo apt install -y \
-    libgtk-4-dev \
-    libwebkit2gtk-4.1-dev \
-    libadwaita-1-dev \
+    libgtk-3-dev \
+    libwebkit2gtk-4.0-dev \
     pkg-config \
     libssl-dev
 ```
@@ -81,13 +81,13 @@ sudo apt install -y \
 ### Dependencies (Arch Linux)
 
 ```bash
-sudo pacman -S gtk4 webkit2gtk-4.1 libadwaita pkg-config openssl
+sudo pacman -S gtk3 webkit2gtk pkg-config openssl
 ```
 
 ### Dependencies (Fedora)
 
 ```bash
-sudo dnf install gtk4-devel webkit2gtk4.1-devel libadwaita-devel pkg-config openssl-devel
+sudo dnf install gtk3-devel webkit2gtk4.0-devel pkg-config openssl-devel
 ```
 
 ### From Source
