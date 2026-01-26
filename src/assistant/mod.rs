@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root.
 // https://github.com/bad-antics/marshall
 
-//! Dr. Marshall - Advanced AI Assistant with Grok-level Intelligence
+//! Dr. Marshall - Advanced AI Assistant with Advanced Intelligence
 //! Features multi-provider LLM support, animated avatar, TTS/STT, and integrated tools
 
 pub mod avatar;

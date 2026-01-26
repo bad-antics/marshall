@@ -3,7 +3,7 @@
 // https://github.com/bad-antics/marshall
 
 //! Advanced AI Engine with multi-provider LLM support
-//! Designed to match Grok-level conversational intelligence
+//! Designed for high-quality conversational intelligence
 
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -19,7 +19,6 @@ pub enum AIProvider {
     OpenAI,
     Anthropic,
     Groq,
-    XAI,          // Grok
     Ollama,       // Local
     LMStudio,     // Local
     OpenRouter,   // Aggregator
@@ -35,7 +34,6 @@ impl AIProvider {
             Self::OpenAI => "https://api.openai.com/v1/chat/completions",
             Self::Anthropic => "https://api.anthropic.com/v1/messages",
             Self::Groq => "https://api.groq.com/openai/v1/chat/completions",
-            Self::XAI => "https://api.x.ai/v1/chat/completions",
             Self::Ollama => "http://localhost:11434/api/chat",
             Self::LMStudio => "http://localhost:1234/v1/chat/completions",
             Self::OpenRouter => "https://openrouter.ai/api/v1/chat/completions",
@@ -51,7 +49,6 @@ impl AIProvider {
             Self::OpenAI => "gpt-4-turbo-preview",
             Self::Anthropic => "claude-3-opus-20240229",
             Self::Groq => "llama-3.1-70b-versatile",
-            Self::XAI => "grok-2",
             Self::Ollama => "llama3.1:70b",
             Self::LMStudio => "local-model",
             Self::OpenRouter => "anthropic/claude-3-opus",
@@ -185,7 +182,7 @@ pub struct FunctionDefinition {
 }
 
 /// Dr. Marshall's comprehensive system prompt
-const DR_MARSHALL_SYSTEM_PROMPT: &str = r#"You are Dr. Marshall, an advanced AI assistant integrated into the Marshall Privacy Browser. You are sophisticated, knowledgeable, and designed to provide Grok-level intelligence with a focus on security, privacy, and productivity.
+const DR_MARSHALL_SYSTEM_PROMPT: &str = r#"You are Dr. Marshall, an advanced AI assistant integrated into the Marshall Privacy Browser. You are sophisticated, knowledgeable, and designed to provide expert-level intelligence with a focus on security, privacy, and productivity.
 
 ## Core Identity
 - Name: Dr. Marshall
@@ -226,7 +223,7 @@ You have access to the following integrated tools and can help with:
 
 ## Response Guidelines
 
-1. **Be Grok-like**: Provide insightful, nuanced responses. Don't just answer - analyze, contextualize, and offer additional relevant insights.
+1. **Be Insightful**: Provide nuanced responses. Don't just answer - analyze, contextualize, and offer additional relevant insights.
 
 2. **Security-First**: Always consider security implications. Warn users about potential risks. Suggest safer alternatives when appropriate.
 
@@ -449,7 +446,7 @@ impl AIEngine {
         }
     }
 
-    /// OpenAI-compatible API request (works with OpenAI, Groq, XAI, Together, Mistral, OpenRouter, LMStudio)
+    /// OpenAI-compatible API request (works with OpenAI, Groq, Together, Mistral, OpenRouter, LMStudio)
     async fn send_openai_compatible_request(
         &self,
         config: &AIModelConfig,
@@ -790,7 +787,6 @@ mod tests {
     #[test]
     fn test_provider_endpoints() {
         assert!(AIProvider::OpenAI.endpoint().contains("openai.com"));
-        assert!(AIProvider::XAI.endpoint().contains("x.ai"));
         assert!(AIProvider::Ollama.endpoint().contains("localhost"));
     }
 }
