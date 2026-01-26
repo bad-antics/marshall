@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-action@stable
+    
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-4-dev libwebkitgtk-6.0-dev libadwaita-1-dev
+    
+    - name: Build
+      run: cargo build --release
+    
+    - name: Create Tarball
+      run: |
+        mkdir -p releases
+        cp target/release/marshall releases/
+        cd releases
+        tar -czvf marshall-linux-x86_64.tar.gz marshall
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: marshall-linux
+        path: releases/marshall-linux-x86_64.tar.gz
+
+  release:
+    needs: build-linux
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v4
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          marshall-linux/marshall-linux-x86_64.tar.gz
+        generate_release_notes: true
