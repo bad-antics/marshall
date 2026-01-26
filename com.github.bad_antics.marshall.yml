@@ -1,0 +1,33 @@
+app-id: com.github.bad_antics.marshall
+runtime: org.gnome.Platform
+runtime-version: '45'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: marshall
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
+modules:
+  - name: webkitgtk
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DPORT=GTK
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://webkitgtk.org/releases/webkitgtk-2.42.0.tar.xz
+        sha256: SKIP
+  - name: marshall
+    buildsystem: simple
+    build-commands:
+      - cargo build --release
+      - install -Dm755 target/release/marshall /app/bin/marshall
+    sources:
+      - type: dir
+        path: .

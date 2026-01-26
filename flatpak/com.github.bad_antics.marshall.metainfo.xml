@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.bad_antics.marshall</id>
+  <name>Marshall Browser</name>
+  <summary>Privacy-focused web browser with AI assistant</summary>
+  <description>
+    <p>Marshall is a privacy-focused web browser built with Rust and GTK4, designed for security researchers and privacy enthusiasts.</p>
+    <p>Features:</p>
+    <ul>
+      <li>WebKitGTK 6.0 rendering engine</li>
+      <li>AI Assistant integration</li>
+      <li>Dark theme interface</li>
+      <li>Tab management</li>
+      <li>Bookmark support</li>
+      <li>Privacy-first design</li>
+    </ul>
+  </description>
+  <url type="homepage">https://github.com/bad-antics/marshall</url>
+  <url type="bugtracker">https://github.com/bad-antics/marshall/issues</url>
+  <developer_name>bad-antics</developer_name>
+  <launchable type="desktop-id">com.github.bad_antics.marshall.desktop</launchable>
+  <categories>
+    <category>Network</category>
+    <category>WebBrowser</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="1.1.0" date="2026-01-26"/>
+  </releases>
+</component>

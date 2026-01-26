@@ -1,0 +1,34 @@
+name: marshall-browser
+base: core22
+version: '1.1.0'
+summary: Privacy-focused web browser with AI assistant
+description: |
+  Marshall is a privacy-focused web browser built with Rust and GTK4.
+  Features AI assistant integration, dark theme, and tab management.
+
+grade: stable
+confinement: strict
+
+apps:
+  marshall:
+    command: usr/bin/marshall
+    extensions: [gnome]
+    plugs:
+      - home
+      - network
+      - network-bind
+      - browser-support
+      - opengl
+
+parts:
+  marshall:
+    plugin: rust
+    source: .
+    build-packages:
+      - libgtk-4-dev
+      - libwebkitgtk-6.0-dev
+      - libadwaita-1-dev
+    stage-packages:
+      - libgtk-4-1
+      - libwebkitgtk-6.0-4
+      - libadwaita-1-0
