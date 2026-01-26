@@ -1,141 +1,56 @@
-# Contributing to Marshall
+# Contributing to Marshall Browser
 
-Thank you for your interest in contributing to Marshall! This document provides guidelines and instructions.
+Thank you for your interest in contributing!
 
-## Getting Started
+## Ways to Contribute
 
-### Prerequisites
+### Bug Reports
+1. Check existing issues first
+2. Use the bug report template
+3. Include system info, steps to reproduce, and error logs
 
-- Rust 1.75+ toolchain
-- GTK4 development libraries
-- libadwaita development libraries
+### Feature Requests
+1. Check if already requested
+2. Describe the feature and use case
+3. Consider privacy implications
 
-### Build Setup
+### Code Contributions
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Write tests if applicable
+5. Submit a pull request
+
+## Development Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/bad-antics/marshall.git
+# Clone
+git clone https://github.com/bad-antics/marshall
 cd marshall
 
-# Install dependencies (Fedora/RHEL)
-sudo dnf install gtk4-devel libadwaita-devel
-
 # Install dependencies (Debian/Ubuntu)
-sudo apt install libgtk-4-dev libadwaita-1-dev
+sudo apt install libgtk-4-dev libwebkitgtk-6.0-dev libadwaita-1-dev
 
 # Build
-cargo build --release
+cargo build
 
 # Run
 cargo run
 ```
 
-## Development Workflow
-
-### Code Style
-
-- Follow Rust standard formatting: `cargo fmt`
-- Address all clippy warnings: `cargo clippy`
-- Document public APIs with doc comments
-- Keep functions focused and testable
-
-### Commit Messages
-
-Use conventional commits format:
-
-```
-type(scope): brief description
-
-Optional longer description.
-
-Refs: #issue_number
-```
-
-**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-
-### Pull Requests
-
-1. Fork and create a feature branch
-2. Make changes with clear commits
-3. Update documentation as needed
-4. Ensure CI passes
-5. Request review
+## Code Style
+- Follow Rust conventions
+- Use `cargo fmt` before committing
+- Run `cargo clippy` for linting
 
 ## Architecture
+- `src/main.rs` - Application entry
+- `src/browser/` - Browser functionality
+- `src/assistant/` - AI assistant
+- `src/ui/` - UI components
 
-### Crate Structure
-
-```
-marshall/
-├── src/
-│   ├── main.rs          # Application entry
-│   ├── app.rs           # GTK application setup
-│   ├── window.rs        # Main window
-│   ├── widgets/         # Custom UI components
-│   ├── services/        # Business logic
-│   └── models/          # Data structures
-├── assets/              # Icons, images, stylesheets
-└── resources/           # GResource bundles
-```
-
-### Key Components
-
-- **Application**: GTK4 + libadwaita setup
-- **Window Management**: Multi-window support
-- **State Management**: Reactive data flow
-- **File Operations**: Async I/O patterns
-
-## Testing
-
-```bash
-# Run all tests
-cargo test
-
-# Run with output
-cargo test -- --nocapture
-
-# Run specific test
-cargo test test_name
-```
-
-## Documentation
-
-```bash
-# Generate docs
-cargo doc --open
-
-# Check doc coverage
-cargo doc --document-private-items
-```
-
-## Feature Requests
-
-Open a GitHub issue with:
-- Clear use case description
-- Expected behavior
-- Optional: Implementation suggestions
-
-## Bug Reports
-
-Include:
-- Marshall version
-- OS and desktop environment
-- Steps to reproduce
-- Expected vs actual behavior
-- Error messages or logs
-
-## Code of Conduct
-
-- Be respectful and constructive
-- Welcome newcomers
-- Focus on the work, not the person
-- Assume good intentions
-
-## License
-
-Contributions are licensed under MIT. By contributing, you agree to these terms.
-
-## Questions?
-
-- GitHub Discussions for questions
-- Discord for real-time chat: [discord.gg/killers](https://discord.gg/killers)
+## Pull Request Process
+1. Update documentation if needed
+2. Ensure `cargo test` passes
+3. Run `cargo clippy` without warnings
+4. Request review
