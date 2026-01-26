@@ -237,7 +237,7 @@ impl DrMarshall {
     }
 
     /// Get the chat panel widget
-    pub fn get_chat_widget(&self) -> Option<&gtk4::Box> {
+    pub fn get_chat_widget(&self) -> Option<&gtk::Box> {
         self.chat_panel.as_ref().map(|p| p.widget())
     }
 

@@ -18,7 +18,7 @@ assistant = []
 
 [dependencies]
 # GTK4/WebKit GTK bindings
-gtk4 = "0.7"
+# gtk4 = "0.7"  # Disabled - using GTK3 only
 webkit2gtk = "0.19"
 gtk = "0.16"
 gdk = "0.16"

@@ -34,6 +34,14 @@
 
 ---
 
+## 📸 Screenshot
+
+<p align="center">
+  <img src="screenshot.png" alt="Marshall Browser" width="800">
+</p>
+
+---
+
 ## 🎯 Why Marshall?
 
 Marshall was built from the ground up with **privacy by default**. Unlike mainstream browsers that bolt on privacy features as an afterthought, Marshall is designed to:
