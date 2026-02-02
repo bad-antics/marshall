@@ -1,6 +1,6 @@
 [package]
 name = "marshall"
-version = "2.1.0"
+version = "3.0.0"
 edition = "2021"
 authors = ["bad-antics"]
 description = "Marshall - NullSec Command Center | Browser • OSINT • Workforce • VoIP • AI"

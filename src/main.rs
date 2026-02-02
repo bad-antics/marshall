@@ -26,6 +26,8 @@ mod assistant;
 mod voip;
 mod workforce;
 mod search;
+mod exploit;
+mod security;
 mod database;
 
 use gtk::prelude::*;
