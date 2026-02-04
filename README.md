@@ -14,6 +14,23 @@
 - 🔒 Tab Isolation
 - 👤 Anti-Fingerprinting
 
+
+## 📸 Screenshots
+
+<div align="center">
+
+### Main Browser Interface
+![Marshall Browser Main](screenshots/marshall-browser.png)
+
+*Clean, minimal interface with privacy-first design*
+
+### Active Browsing Session
+![Marshall Window](screenshots/marshall-window.png)
+
+*Built-in OSINT tools and privacy controls accessible from the toolbar*
+
+</div>
+
 ## Build
 
 ```bash
