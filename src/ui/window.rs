@@ -5,7 +5,7 @@
 //! Main browser window implementation
 
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Box as GtkBox, Orientation, CssProvider, StyleContext};
+use gtk::{Application, ApplicationWindow, Box as GtkBox, Orientation, CssProvider, StyleContext, Paned};
 use webkit2gtk::{WebView, WebViewExt, WebContext, WebContextExt, LoadEvent, PolicyDecisionType, NavigationPolicyDecision, PolicyDecisionExt, NavigationPolicyDecisionExt, URIRequestExt};
 use gdk::Screen;
 use tracing::info;
@@ -13,6 +13,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use crate::config::Config;
+use crate::assistant::ai_chat::AIChatPanel;
 use super::{Toolbar, TabBar, StatusBar, Theme, homepage};
 
 const WINDOW_WIDTH: i32 = 1400;
@@ -109,8 +110,21 @@ impl BrowserWindow {
         let webview = Self::create_webview(&web_context, config);
         webview.set_vexpand(true);
         webview.set_hexpand(true);
-        
-        main_box.pack_start(&webview, true, true, 0);
+
+        // Create Dr. Marshall AI sidebar in a horizontal pane
+        let paned = Paned::new(Orientation::Horizontal);
+        paned.set_wide_handle(true);
+        paned.pack1(&webview, true, false);
+
+        // Build AI Chat Panel and wrap in a frame
+        let ai_panel = AIChatPanel::new();
+        let ai_sidebar = ai_panel.widget().clone();
+        ai_sidebar.set_width_request(380);
+        ai_sidebar.set_no_show_all(true); // hidden by default
+        ai_sidebar.set_visible(false);
+        paned.pack2(&ai_sidebar, false, false);
+
+        main_box.pack_start(&paned, true, true, 0);
 
         // Create status bar
         let status_bar = StatusBar::new(config);
@@ -124,6 +138,16 @@ impl BrowserWindow {
         // Connect all signals BEFORE loading homepage
         Self::connect_toolbar_signals(&toolbar, &webview, config, history.clone());
         Self::connect_webview_signals(&webview, &toolbar, &status_bar, history.clone());
+
+        // Connect AI sidebar toggle
+        let ai_sidebar_toggle = ai_sidebar.clone();
+        toolbar.connect_ai(move || {
+            let visible = ai_sidebar_toggle.is_visible();
+            ai_sidebar_toggle.set_visible(!visible);
+            if !visible {
+                ai_sidebar_toggle.show_all();
+            }
+        });
         
         // Now load Marshall branded homepage (history is added in handle_internal_url)
         Self::handle_internal_url(&webview, "marshall://home", &history, &toolbar);

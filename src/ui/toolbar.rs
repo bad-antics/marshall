@@ -21,6 +21,7 @@ pub struct Toolbar {
     reload_btn: Button,
     home_btn: Button,
     url_bar: UrlBar,
+    ai_btn: Button,
     menu_btn: Button,
     shield_btn: Button,
 }
@@ -56,6 +57,11 @@ impl Toolbar {
         // URL bar
         let url_bar = UrlBar::new();
         
+        // AI Assistant button (Dr. Marshall sidebar toggle)
+        let ai_btn = Button::with_label("🤖");
+        ai_btn.set_tooltip_text(Some("Toggle Dr. Marshall AI (Ctrl+Shift+A)"));
+        ai_btn.style_context().add_class("ai-toggle-btn");
+        
         // Shield button (privacy indicator)
         let shield_btn = Button::from_icon_name(Some("security-high-symbolic"), gtk::IconSize::Button);
         shield_btn.set_tooltip_text(Some("Privacy Protection: ON"));
@@ -73,6 +79,7 @@ impl Toolbar {
         container.pack_start(&reload_btn, false, false, 2);
         container.pack_start(&home_btn, false, false, 2);
         container.pack_start(url_bar.container(), true, true, 8);
+        container.pack_start(&ai_btn, false, false, 2);
         container.pack_start(&shield_btn, false, false, 2);
         container.pack_start(&menu_btn, false, false, 2);
 
@@ -83,6 +90,7 @@ impl Toolbar {
             reload_btn,
             home_btn,
             url_bar,
+            ai_btn,
             menu_btn,
             shield_btn,
         }
@@ -144,6 +152,10 @@ impl Toolbar {
 
     pub fn connect_menu<F: Fn() + 'static>(&self, f: F) {
         self.menu_btn.connect_clicked(move |_| f());
+    }
+
+    pub fn connect_ai<F: Fn() + 'static>(&self, f: F) {
+        self.ai_btn.connect_clicked(move |_| f());
     }
 
     pub fn connect_shield<F: Fn() + 'static>(&self, f: F) {

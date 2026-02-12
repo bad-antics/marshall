@@ -57,7 +57,7 @@ const BANNER: &str = r#"
 ║    ██║ ╚═╝ ██║██║  ██║██║  ██║███████║██║  ██║██║  ██║███████╗███████╗                ║
 ║    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝                ║
 ║                                                                                       ║
-║                      🔒 NULLSEC COMMAND CENTER v2.1.0 🔒                              ║
+║                      🔒 NULLSEC COMMAND CENTER v3.1.0 🔒                              ║
 ║                                                                                       ║
 ║                  Secure. Private. Untraceable.                                        ║
 ║                                                                                       ║
@@ -200,14 +200,11 @@ fn build_ui(app: &Application, config: &Config) {
             info!("Marshall Command Center dashboard created");
         }
         _ => {
-            // Launch browser with integrated features
+            // Launch browser with integrated AI assistant sidebar
             let window = BrowserWindow::new(app, config);
             
-            // TODO: Integrate assistant, voip, workforce into browser window
-            // For now, the dashboard can be accessed via a toolbar button
-            
             window.present();
-            info!("Marshall browser window created");
+            info!("Marshall browser window created with Dr. Marshall AI integration");
         }
     }
 }
