@@ -6,6 +6,7 @@ pub mod isolation;
 pub mod anti_fingerprint;
 pub mod traffic;
 pub mod memory;
+pub mod threat_intel;
 
 use std::sync::Arc;
 use parking_lot::RwLock;
